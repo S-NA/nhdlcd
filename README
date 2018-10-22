@@ -1,0 +1,9 @@
+nhdlcd An Arduino library to interface with the NHD - 0216K3Z - FL - GBW -
+    V3.
+
+    The library is implemented to use SPI as the serial interface,
+    although I2C would likely be a better choice if my understanding is correct
+        .By the nature of using a software emulated
+        SPI(bit banging) any pins can be to communicate with the LCD.Most
+    commonly(due to hardware SPI) pins 13,
+    12, and11 are used.
