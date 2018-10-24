@@ -61,7 +61,7 @@ void nhdlcd::write(Command cmd, int argv...) {
   unsigned delayTime = get_cmd_delay(cmd); /* in μs */
   va_list args;
   va_start(args, argv);
-
+  
   uint8_t count = 1;
   if (cmd == Command::LoadCustomCharacter)
     count = 9;
@@ -69,7 +69,8 @@ void nhdlcd::write(Command cmd, int argv...) {
   write(0xFE);
   write(get_cmd_value(cmd));
   for (uint8_t i = 0; i < count; ++i) {
-    byte ch = va_arg(args, int);
+    unsigned char ch = (count == 1) ? argv : va_arg(args, int);
+    Serial.println(ch);
     write(ch);
   }
   va_end(args);
