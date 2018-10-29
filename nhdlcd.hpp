@@ -6,6 +6,18 @@
 #include <WProgram.h>
 #endif
 
+enum Level : unsigned char {
+  OFF,
+  LEVEL_1,
+  LEVEL_2,
+  LEVEL_3,
+  LEVEL_4,
+  LEVEL_5,
+  LEVEL_6,
+  LEVEL_7,
+  MAX
+};
+
 enum class Command : unsigned char {
   DisplayOn,
   DisplayOff,
@@ -42,6 +54,7 @@ private:
   pin_t data;
   pin_t clock;
   pin_t slaveSelect;
+  unsigned charCount;
 
 public:
   /**
@@ -82,4 +95,15 @@ public:
    * @param c-style string to write to LCD
    */
   void write(const char *);
+
+  /**
+   * Scroll string from left to right, and right to left.
+   */
+  void hMarquee();
+  /**
+   * Blink the LCD.
+   * @param how many times to blink the LCD
+   * @param the level to blink to from LOW
+   */
+  void blink(unsigned char = 10, Level = MAX);
 };

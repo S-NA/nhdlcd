@@ -4,7 +4,7 @@ unsigned char get_cmd_value(Command);
 unsigned get_cmd_delay(Command);
 
 nhdlcd::nhdlcd(pin_t datPin, pin_t clkPin, pin_t slsPin)
-    : data{datPin}, clock{clkPin}, slaveSelect{slsPin} {
+    : data{datPin}, clock{clkPin}, slaveSelect{slsPin}, charCount{0} {
   setup();
 }
 
@@ -52,6 +52,7 @@ void nhdlcd::write(unsigned char ch, int bitOrder) {
 
 void nhdlcd::write(Command cmd) {
   unsigned delayTime = get_cmd_delay(cmd); /* in μs */
+  if (cmd == Command::ClearScreen) charCount = 0;
   write(0xFEU);
   write(get_cmd_value(cmd));
   delayMicroseconds(delayTime);
@@ -82,6 +83,29 @@ void nhdlcd::write(const char *str) {
   uint8_t i = 0;
   while (str[i]) {
     write(str[i++]);
+  }
+  ++charCount;
+}
+
+void nhdlcd::hMarquee() {
+  for (unsigned i = 0; i < max(charCount, 16); ++i) {
+    write(Command::MoveDisplayRightOnePlace);
+    delay(50);
+  }
+  delay(100);
+  for (unsigned i = 0; i < max(charCount, 16); ++i) {
+    write(Command::MoveDisplayLeftOnePlace);
+    delay(50);
+  }
+  delay(100);
+}
+
+void nhdlcd::blink(unsigned char reps, Level restore) {
+  for (int i = 0; i < reps; ++i) {
+    write(Command::SetBacklightBrightness, 1);
+    delay(100);
+    write(Command::SetBacklightBrightness, restore);
+    delay(100);
   }
 }
 
